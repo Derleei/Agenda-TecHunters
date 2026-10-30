@@ -1,0 +1,989 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f5f2ec">
+<meta name="color-scheme" content="light">
+<meta name="robots" content="noindex">
+<title>Vamos marcar?</title>
+<script src="config.js"></script>
+<style>
+:root{
+  --bg:#f5f2ec;
+  --surface:#ffffff;
+  --ink:#17232b;
+  --muted:#5f6b73;
+  --line:#e2ddd2;
+  --brand:#0e6b62;
+  --brand-strong:#0a524b;
+  --brand-soft:#e1f0ed;
+  --accent:#e09a2d;
+  --danger:#b3261e;
+  --nao:#d23f31;
+  --talvez:#f4c05a;
+  --talvez-borda:#e3a83a;
+  --talvez-ink:#4f3600;
+  --radius:16px;
+  --cel-h:44px;
+  --col-hora:38px;
+  --gap:3px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+button{font:inherit;color:inherit}
+[hidden]{display:none !important}
+.wrap{max-width:560px;margin:0 auto;padding:16px 12px 32px}
+.muted{color:var(--muted)}
+.pequeno{font-size:13.5px;margin:-4px 0 6px}
+
+/* Modo demonstração */
+.demo{background:#fff4dc;color:#6b4a0f;font-size:13px;line-height:1.35;padding:8px 14px;text-align:center;border-bottom:1px solid #f1dfb4}
+.demo code{background:rgba(0,0,0,.06);padding:1px 4px;border-radius:4px}
+
+/* Tela 1 — nome */
+.hero{padding:18px 4px 20px}
+.selo{display:inline-flex;align-items:center;gap:7px;background:var(--brand-soft);color:var(--brand-strong);font-weight:650;font-size:13px;padding:5px 12px;border-radius:999px}
+.selo::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--brand)}
+h1{font-size:30px;line-height:1.12;letter-spacing:-.02em;margin:14px 0 8px;font-weight:750}
+.desc{color:var(--muted);margin:0}
+.cartao{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px 16px;box-shadow:0 10px 28px -20px rgba(23,35,43,.35)}
+.retorno-ola{margin:0 0 2px;font-size:17px}
+.retorno-info{margin:0 0 14px;color:var(--muted);font-size:14.5px}
+.rotulo{display:block;font-weight:650;font-size:14px;margin:0 0 6px}
+input[type=text]{
+  width:100%;font:inherit;font-size:17px;padding:13px 14px;border:1.5px solid var(--line);border-radius:12px;
+  background:#fdfcfa;color:var(--ink);outline:none;transition:border-color .15s,box-shadow .15s
+}
+input[type=text]:focus{border-color:var(--brand);box-shadow:0 0 0 4px rgba(14,107,98,.14);background:#fff}
+.btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:50px;border-radius:12px;border:0;
+  font-weight:650;font-size:16.5px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+  transition:background .15s,transform .08s
+}
+.btn:active{transform:scale(.985)}
+.btn-primario{background:var(--brand);color:#fff;margin-top:14px}
+.btn-primario:disabled{opacity:.75;cursor:default}
+.btn-secundario{background:transparent;color:var(--brand-strong);border:1.5px solid var(--line);margin-top:10px}
+@media (hover:hover){
+  .btn-primario:not(:disabled):hover{background:var(--brand-strong)}
+  .btn-secundario:hover{border-color:var(--brand)}
+}
+.erro{color:var(--danger);font-size:14px;margin:8px 0 0}
+.aviso{color:#8a5a00}
+.passos{list-style:none;counter-reset:p;padding:0;margin:22px 6px 0;display:grid;gap:10px}
+.passos li{counter-increment:p;display:flex;align-items:center;gap:10px;color:var(--muted);font-size:15px}
+.passos li::before{content:counter(p);flex:none;width:24px;height:24px;border-radius:50%;background:var(--surface);border:1px solid var(--line);display:grid;place-items:center;font-size:12.5px;font-weight:700;color:var(--ink)}
+.link{background:none;border:0;color:var(--muted);text-decoration:underline;font-size:14px;margin:24px auto 0;display:block;padding:8px;cursor:pointer}
+
+/* Tela 2 — grade */
+.wrap-grade{padding-bottom:calc(130px + env(safe-area-inset-bottom))}
+.topo{display:flex;gap:10px;align-items:center;margin:0 0 10px}
+.voltar{flex:none;width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--surface);cursor:pointer;display:grid;place-items:center;padding:0;touch-action:manipulation}
+.voltar svg{width:20px;height:20px}
+.topo-ola{margin:0;font-size:18px;line-height:1.25}
+.topo-dica{margin:1px 0 0;color:var(--muted);font-size:14.5px;line-height:1.3}
+.legenda{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13.5px;color:var(--ink);margin:4px 2px 0;align-items:center}
+.legenda > span{display:inline-flex;align-items:center;gap:6px}
+.amostra{width:20px;height:20px;border-radius:6px;border:1px solid var(--line);background:var(--surface);display:inline-grid;place-items:center;font-style:normal;font-weight:800;font-size:12px;line-height:1}
+.amostra.nao{color:var(--nao)}
+.amostra.sim{background:var(--brand);border-color:var(--brand);color:#fff}
+.amostra.talvez{background:var(--talvez);border-color:var(--talvez-borda);color:var(--talvez-ink);font-size:13px}
+.legenda-dica{font-size:13px;color:var(--muted);margin:4px 2px 0}
+.grade-cabecalho{display:grid;gap:var(--gap);position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0 6px}
+.cab-canto{font-size:12px;color:var(--muted);display:flex;align-items:flex-end;justify-content:flex-end;padding:0 6px 3px 0}
+.cab-dia{text-align:center;line-height:1.1;min-width:0}
+.cab-dia span{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.cab-dia b{display:block;font-size:18px;font-weight:750;margin-top:2px}
+.cab-dia.fds span{color:#b0741a}
+.grade{display:grid;gap:var(--gap)}
+.hora{font-size:12.5px;color:var(--muted);display:flex;align-items:center;justify-content:flex-end;padding-right:6px;font-variant-numeric:tabular-nums}
+.quebra{margin-top:9px}
+.cel{
+  appearance:none;-webkit-appearance:none;border:1px solid var(--line);background:var(--surface);border-radius:9px;
+  height:var(--cel-h);min-width:0;padding:0;cursor:pointer;position:relative;touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;transition:background .12s,border-color .12s,transform .08s
+}
+.cel.fds{background:#fbf8f2}
+.cel:active{transform:scale(.93)}
+.cel:focus-visible{outline:2.5px solid var(--ink);outline-offset:1px}
+/* Grade de escolha: ✕ não posso (padrão) · ✓ posso · ? talvez */
+.esc::before,.esc::after{content:"";position:absolute;left:50%;top:50%;pointer-events:none}
+.esc:not(.sim):not(.talvez)::before,
+.esc:not(.sim):not(.talvez)::after{width:13px;height:2.2px;border-radius:2px;background:var(--nao);transform:translate(-50%,-50%) rotate(45deg)}
+.esc:not(.sim):not(.talvez)::after{transform:translate(-50%,-50%) rotate(-45deg)}
+.esc.sim{background:var(--brand);border-color:var(--brand)}
+.esc.sim::after{width:13px;height:7px;border:solid #fff;border-width:0 0 2.5px 2.5px;transform:translate(-50%,-70%) rotate(-45deg)}
+.esc.talvez{background:var(--talvez);border-color:var(--talvez-borda)}
+.esc.talvez::after{content:"?";font-weight:800;font-size:19px;line-height:1;color:var(--talvez-ink);transform:translate(-50%,-50%)}
+@media (hover:hover){.esc:not(.sim):not(.talvez):hover{border-color:var(--nao)}}
+.grade.travada{pointer-events:none;opacity:.7}
+
+.barra{
+  position:fixed;left:0;right:0;bottom:0;z-index:10;background:rgba(255,255,255,.96);
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-top:1px solid var(--line);
+  padding:10px 12px calc(10px + env(safe-area-inset-bottom));box-shadow:0 -10px 26px -20px rgba(23,35,43,.4)
+}
+.barra-in{max-width:560px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.barra-info{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.25}
+.barra-info strong{font-size:15.5px}
+.barra-info span{font-size:13px;color:var(--muted)}
+.barra-info span.pendente{color:#a5620c}
+.btn-salvar{width:auto;min-width:130px;margin:0;padding:0 22px}
+.barra-erro{max-width:560px;margin:8px auto 0;line-height:1.35}
+.giro{width:18px;height:18px;border-radius:50%;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;animation:giro .7s linear infinite;flex:none}
+.giro.escuro{border-color:rgba(14,107,98,.2);border-top-color:var(--brand)}
+@keyframes giro{to{transform:rotate(360deg)}}
+
+/* Tela 3 — resultados */
+.sucesso{display:flex;gap:12px;align-items:center;background:var(--brand-soft);border:1px solid #c3e2dc;color:var(--brand-strong);border-radius:var(--radius);padding:14px 16px;margin:6px 0 18px;line-height:1.35}
+.sucesso-icone{flex:none;width:34px;height:34px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-weight:800}
+.titulo-sec{font-size:26px;margin:8px 0 2px;letter-spacing:-.02em}
+.carregando{display:flex;align-items:center;gap:10px}
+h3{font-size:12.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:26px 2px 10px}
+.top{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.top-item{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:center}
+.top-item.melhor{border-color:#ecc88f;box-shadow:inset 4px 0 0 var(--accent)}
+.top-quando b{display:block;font-size:16px}
+.top-quando span{color:var(--muted);font-size:14px}
+.top-placar{display:flex;align-items:center;gap:8px;font-variant-numeric:tabular-nums;font-size:15px}
+.top-placar small{display:block;font-size:12px;font-weight:650;color:#9a6a00;text-align:right;line-height:1.1}
+.barrinha{width:64px;height:8px;border-radius:99px;background:#eee9df;overflow:hidden;display:flex}
+.barrinha i{display:block;height:100%;background:var(--brand)}
+.barrinha i.t{background:var(--talvez)}
+.top-nomes{grid-column:1/-1;margin:4px 0 0;font-size:13.5px;color:var(--muted)}
+.top-nomes .tz{color:#8a5f00}
+.cel-res{cursor:pointer;font-size:13px;font-weight:700;color:var(--brand-strong);font-variant-numeric:tabular-nums}
+.cel-res .t{position:absolute;top:2px;right:2px;background:var(--talvez);color:var(--talvez-ink);font-size:9.5px;font-weight:800;line-height:1;padding:2px 3px;border-radius:5px}
+.cel-res.escuro{color:#fff;border-color:transparent}
+.cel-res.top{box-shadow:inset 0 0 0 2px var(--accent)}
+.cel-res.ativa{outline:2.5px solid var(--ink);outline-offset:1px;z-index:1}
+.detalhe{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-top:12px;line-height:1.4}
+.detalhe p{margin:0}
+.det-quando{font-weight:700;font-size:16px}
+.det-placar{color:var(--muted);font-size:14px;margin:2px 0 10px !important}
+.det-linha{font-size:14.5px;margin-top:6px !important}
+.tag{display:inline-block;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;border-radius:6px;padding:2px 7px;margin-right:6px}
+.tag.ok{background:var(--brand-soft);color:var(--brand-strong)}
+.tag.tz{background:#fcefd2;color:#7a5200}
+.tag.nao{background:#fbe9e7;color:#a8352a}
+.mapa-legenda{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;color:var(--muted);margin:0 2px 4px}
+.mapa-legenda span{display:inline-flex;align-items:center;gap:5px}
+.mapa-legenda i{display:inline-block;font-style:normal;background:var(--talvez);color:var(--talvez-ink);font-size:9.5px;font-weight:800;padding:2px 3px;border-radius:5px;line-height:1}
+.mapa-legenda b{display:inline-block;width:13px;height:13px;border-radius:4px;box-shadow:inset 0 0 0 2px var(--accent)}
+.pessoas{list-style:none;padding:0;margin:0;display:grid;gap:6px}
+.pessoa{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 12px}
+.avatar{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-weight:750;font-size:14px;color:#fff}
+.pessoa-nome{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pessoa-nome em{font-style:normal;color:var(--muted);font-size:13.5px}
+.pessoa-n{color:var(--muted);font-size:13.5px;font-variant-numeric:tabular-nums}
+.acoes{margin-top:26px}
+
+@media (min-width:600px){
+  :root{--cel-h:40px;--col-hora:44px;--gap:4px}
+  h1{font-size:34px}
+  .wrap{padding-top:28px}
+}
+</style>
+</head>
+<body>
+<div class="demo" id="demo" hidden>
+  <b>Modo demonstração:</b> as respostas ficam salvas só neste aparelho. Configure o <code>config.js</code> para gravar no GitHub.
+</div>
+
+<!-- ============ TELA 1: NOME ============ -->
+<section id="tela-nome" class="tela">
+  <div class="wrap">
+    <div class="hero">
+      <span class="selo" id="selo-periodo"></span>
+      <h1 id="titulo"></h1>
+      <p class="desc" id="descricao"></p>
+    </div>
+
+    <div class="cartao">
+      <div id="bloco-retorno" hidden>
+        <p class="retorno-ola">Olá de novo, <strong id="retorno-nome"></strong>!</p>
+        <p class="retorno-info" id="retorno-info"></p>
+      </div>
+      <label for="nome" class="rotulo">Seu nome</label>
+      <input id="nome" type="text" autocomplete="name" autocapitalize="words" maxlength="60"
+             placeholder="Ex.: Maria Souza" enterkeyhint="go">
+      <p class="erro" id="erro-nome" hidden></p>
+      <button type="button" class="btn btn-primario" id="btn-continuar">Escolher horários</button>
+      <button type="button" class="btn btn-secundario" id="btn-ver-resultados" hidden>Ver resultados</button>
+    </div>
+
+    <ol class="passos" id="passos">
+      <li>Digite seu nome</li>
+      <li>Toque nos horários em que você pode</li>
+      <li>Salve e veja o resultado do grupo</li>
+    </ol>
+
+    <button type="button" class="link" id="btn-outra-pessoa" hidden>Outra pessoa vai responder neste aparelho?</button>
+  </div>
+</section>
+
+<!-- ============ TELA 2: GRADE ============ -->
+<section id="tela-grade" class="tela" hidden>
+  <div class="wrap wrap-grade">
+    <div class="topo">
+      <button type="button" class="voltar" id="btn-voltar" aria-label="Voltar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <div>
+        <p class="topo-ola">Olá, <strong id="grade-nome"></strong></p>
+        <p class="topo-dica">Toque nos horários em que você <b>pode</b> ou <b>talvez</b> possa.</p>
+      </div>
+    </div>
+    <div class="legenda">
+      <span><i class="amostra nao">✕</i>Não posso</span>
+      <span><i class="amostra sim">✓</i>Posso</span>
+      <span><i class="amostra talvez">?</i>Talvez</span>
+    </div>
+    <p class="legenda-dica">Cada toque muda: ✕ → ✓ → ? → ✕</p>
+    <div class="grade-cabecalho" id="grade-cab" aria-hidden="true"></div>
+    <div class="grade" id="grade" role="group" aria-label="Horários disponíveis"></div>
+  </div>
+
+  <div class="barra">
+    <div class="barra-in">
+      <div class="barra-info" aria-live="polite">
+        <strong id="contador">Nenhum horário</strong>
+        <span id="barra-status"></span>
+      </div>
+      <button type="button" class="btn btn-primario btn-salvar" id="btn-salvar">Salvar</button>
+    </div>
+    <p class="erro barra-erro" id="erro-salvar" role="alert" hidden></p>
+  </div>
+</section>
+
+<!-- ============ TELA 3: RESULTADOS ============ -->
+<section id="tela-resultados" class="tela" hidden>
+  <div class="wrap">
+    <div class="sucesso" id="aviso-sucesso" hidden>
+      <span class="sucesso-icone">✓</span>
+      <div><strong>Respostas salvas!</strong><br><span>Veja abaixo o que o grupo marcou até agora.</span></div>
+    </div>
+
+    <h2 class="titulo-sec">Resultados</h2>
+    <p class="muted" id="res-resumo"></p>
+
+    <div id="res-conteudo" hidden>
+      <h3>Melhores horários</h3>
+      <ol class="top" id="res-top"></ol>
+
+      <h3>Mapa de disponibilidade</h3>
+      <p class="muted pequeno">Quanto mais escuro, mais pessoas podem. Toque num horário para ver quem.</p>
+      <div class="mapa-legenda"><span>número = quantos podem</span><span><i>+1</i> talvez</span><span><b></b> melhor opção</span></div>
+      <div class="grade-cabecalho" id="res-cab" aria-hidden="true"></div>
+      <div class="grade" id="res-grade"></div>
+      <div class="detalhe" id="res-detalhe" aria-live="polite"></div>
+
+      <h3>Quem respondeu</h3>
+      <ul class="pessoas" id="res-pessoas"></ul>
+    </div>
+
+    <p class="erro" id="erro-res" role="alert" hidden></p>
+
+    <div class="acoes">
+      <button type="button" class="btn btn-primario" id="btn-editar">Editar minhas respostas</button>
+      <button type="button" class="btn btn-secundario" id="btn-atualizar">Atualizar resultados</button>
+    </div>
+  </div>
+</section>
+
+<noscript><p style="padding:20px;text-align:center">Ative o JavaScript para usar esta página.</p></noscript>
+
+<script>
+(function () {
+  'use strict';
+
+  /* =========================================================
+     CONFIGURAÇÃO
+     ========================================================= */
+  const PADRAO = {
+    titulo: 'Qual o melhor horário para você?',
+    descricao: 'Marque todos os horários em que você pode participar. Cada horário dura 1 hora.',
+    dataInicio: '2026-11-01', dataFim: '2026-11-07', horaInicio: 9, horaFim: 21
+  };
+  const BRUTO = window.AGENDA_CONFIG || {};
+  const CFG = Object.assign({}, PADRAO, BRUTO);
+  const GH = Object.assign({ usuario: '', repositorio: '', branch: 'main', pasta: 'respostas', tokenCodificado: '' }, BRUTO.github || {});
+  GH.pasta = String(GH.pasta || 'respostas').replace(/^\/+|\/+$/g, '') || 'respostas';
+  GH.branch = String(GH.branch || 'main');
+  const TOKEN = decodificarToken(GH.tokenCodificado);
+  const DEMO = !TOKEN || !GH.usuario || !GH.repositorio || /SEU_USUARIO/i.test(GH.usuario);
+
+  const SEMANA = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+  const SEMANA_LONGA = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+  const MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+  function inteiro(v, min, max, pad_) { v = parseInt(v, 10); return isNaN(v) ? pad_ : Math.min(max, Math.max(min, v)); }
+  function parseData(s) {
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(s || ''));
+    return m ? new Date(Date.UTC(+m[1], +m[2] - 1, +m[3])) : null;
+  }
+  function decodificarToken(s) {
+    if (!s) return '';
+    try { return atob(String(s).trim()).split('').reverse().join('').trim(); } catch (e) { return ''; }
+  }
+
+  // Dias e horas
+  const ini = parseData(CFG.dataInicio) || parseData(PADRAO.dataInicio);
+  let fim = parseData(CFG.dataFim) || ini;
+  if (fim < ini) fim = ini;
+  const DIAS = [];
+  for (let t = ini.getTime(); t <= fim.getTime() && DIAS.length < 31; t += 86400000) {
+    const d = new Date(t);
+    DIAS.push({
+      iso: d.toISOString().slice(0, 10), dow: d.getUTCDay(), dia: pad(d.getUTCDate()),
+      mes: pad(d.getUTCMonth() + 1), m: d.getUTCMonth(), ano: d.getUTCFullYear(),
+      fds: d.getUTCDay() === 0 || d.getUTCDay() === 6
+    });
+  }
+  const H0 = inteiro(CFG.horaInicio, 0, 23, 9);
+  let H1 = inteiro(CFG.horaFim, 1, 24, 21);
+  if (H1 <= H0) H1 = Math.min(24, H0 + 1);
+  const HORAS = [];
+  for (let h = H0; h < H1; h++) HORAS.push(h);
+
+  const INFO = {};      // chave -> {d, h, ordem}
+  const CHAVES = [];    // em ordem cronológica
+  DIAS.forEach((d, i) => HORAS.forEach(h => {
+    const k = d.iso + 'T' + pad(h);
+    INFO[k] = { d, h, ordem: i * 100 + h };
+    CHAVES.push(k);
+  }));
+  function ordenar(lista) { return lista.slice().sort((a, b) => INFO[a].ordem - INFO[b].ordem); }
+  function chaveParaTexto(k) { return k.slice(0, 10) + ' ' + k.slice(11, 13) + ':00'; }
+  function textoParaChave(s) {
+    const m = /^(\d{4}-\d{2}-\d{2})[ T](\d{2})/.exec(String(s || ''));
+    return m ? m[1] + 'T' + m[2] : null;
+  }
+  function rotuloDia(d) { return SEMANA[d.dow] + ', ' + d.dia + '/' + d.mes; }
+  function rotuloDiaLongo(d) { return SEMANA_LONGA[d.dow] + ', ' + d.dia + '/' + d.mes; }
+  function intervalo(h) { return pad(h) + 'h – ' + pad(h + 1) + 'h'; }
+
+  /* =========================================================
+     ARMAZENAMENTO LOCAL (lembra a pessoa neste aparelho)
+     ========================================================= */
+  const memoria = {};
+  const ls = {
+    get(k) {
+      try { const v = localStorage.getItem(k); if (v != null) return JSON.parse(v); } catch (e) {}
+      return k in memoria ? memoria[k] : null;
+    },
+    set(k, v) { memoria[k] = v; try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+    del(k) { delete memoria[k]; try { localStorage.removeItem(k); } catch (e) {} }
+  };
+  function novoId() {
+    try { if (window.crypto && crypto.randomUUID) return crypto.randomUUID(); } catch (e) {}
+    return 'd-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10) + Math.random().toString(36).slice(2, 10);
+  }
+  const NS = 'agenda:' + (DEMO ? 'demo' : GH.usuario + '/' + GH.repositorio + '/' + GH.pasta) + ':' + DIAS[0].iso;
+  const K_MINHA = NS + ':minha';
+  const K_RASCUNHO = NS + ':rascunho';
+  const K_DISP = 'agenda:dispositivo';
+  let dispositivo = ls.get(K_DISP);
+  if (!dispositivo) { dispositivo = novoId(); ls.set(K_DISP, dispositivo); }
+
+  /* =========================================================
+     BACKEND: GitHub (ou demonstração local)
+     ========================================================= */
+  function erroHttp(status, msg) { const e = new Error(msg || ('HTTP ' + status)); e.status = status; return e; }
+  function b64Codificar(str) {
+    const bytes = new TextEncoder().encode(str);
+    let bin = ''; for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    return btoa(bin);
+  }
+  function b64Decodificar(b64) {
+    const bin = atob(String(b64).replace(/\s/g, ''));
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new TextDecoder().decode(bytes);
+  }
+  const espera = ms => new Promise(r => setTimeout(r, ms));
+
+  async function emLotes(itens, n, fn) {
+    const saida = new Array(itens.length); let i = 0;
+    async function trabalhador() { while (i < itens.length) { const j = i++; saida[j] = await fn(itens[j]); } }
+    await Promise.all(Array.from({ length: Math.min(n, itens.length) }, trabalhador));
+    return saida;
+  }
+
+  function backendGitHub() {
+    const base = 'https://api.github.com/repos/' + encodeURIComponent(GH.usuario) + '/' + encodeURIComponent(GH.repositorio) + '/contents/';
+    const caminhoUrl = p => base + p.split('/').map(encodeURIComponent).join('/');
+    async function req(metodo, p, corpo) {
+      const opts = {
+        method: metodo, cache: 'no-store',
+        headers: { 'Authorization': 'Bearer ' + TOKEN, 'Accept': 'application/vnd.github+json' }
+      };
+      let url = caminhoUrl(p);
+      if (metodo === 'GET') url += '?ref=' + encodeURIComponent(GH.branch) + '&_=' + Date.now();
+      if (corpo) { opts.headers['Content-Type'] = 'application/json'; opts.body = JSON.stringify(corpo); }
+      const r = await fetch(url, opts);
+      if (!r.ok && !(metodo === 'GET' && r.status === 404)) {
+        let msg = ''; try { msg = (await r.json()).message || ''; } catch (e) {}
+        throw erroHttp(r.status, msg);
+      }
+      return r;
+    }
+    return {
+      async get(p) {
+        const r = await req('GET', p);
+        if (r.status === 404) return null;
+        const j = await r.json();
+        if (!j || Array.isArray(j) || typeof j.content !== 'string') return null;
+        let data = null; try { data = JSON.parse(b64Decodificar(j.content)); } catch (e) { data = {}; }
+        return { sha: j.sha, data };
+      },
+      async put(p, data, sha, mensagem) {
+        const corpo = { message: mensagem, content: b64Codificar(JSON.stringify(data, null, 2) + '\n'), branch: GH.branch };
+        if (sha) corpo.sha = sha;
+        await req('PUT', p, corpo);
+      },
+      async del(p, sha, mensagem) { await req('DELETE', p, { message: mensagem, sha, branch: GH.branch }); },
+      async list() {
+        const r = await req('GET', GH.pasta);
+        if (r.status === 404) return [];
+        const j = await r.json();
+        if (!Array.isArray(j)) return [];
+        const arquivos = j.filter(f => f.type === 'file' && /\.json$/i.test(f.name) && !/^[_.]/.test(f.name));
+        const lidos = await emLotes(arquivos, 8, async f => {
+          try { const a = await this.get(f.path); return a ? { path: f.path, data: a.data } : null; } catch (e) { return null; }
+        });
+        return lidos.filter(Boolean);
+      }
+    };
+  }
+
+  function backendDemo() {
+    const K = 'agenda:demo:respostas:' + DIAS[0].iso;
+    // Versões anteriores criavam respostas de exemplo neste aparelho: apaga-as e mantém só as reais.
+    function migrar() {
+      const a = {};
+      try {
+        Object.keys(localStorage).filter(c => c.indexOf('agenda:demo:arquivos:') === 0).forEach(c => {
+          const velho = ls.get(c) || {};
+          Object.keys(velho).forEach(p => { if (velho[p] && velho[p].data && velho[p].data.dispositivo !== 'exemplo') a[p] = velho[p]; });
+          ls.del(c);
+        });
+      } catch (e) {}
+      return a;
+    }
+    function todos() { let a = ls.get(K); if (!a) { a = migrar(); ls.set(K, a); } return a; }
+    const copia = o => JSON.parse(JSON.stringify(o));
+    return {
+      async get(p) { await espera(120); const a = todos(); return a[p] ? copia(a[p]) : null; },
+      async put(p, data, sha) {
+        await espera(450); const a = todos();
+        if (a[p] && a[p].sha !== sha) throw erroHttp(409, 'conflito');
+        a[p] = { sha: novoId(), data: copia(data) }; ls.set(K, a);
+      },
+      async del(p) { await espera(100); const a = todos(); delete a[p]; ls.set(K, a); },
+      async list() { await espera(250); const a = todos(); return Object.keys(a).map(p => ({ path: p, data: copia(a[p].data) })); }
+    };
+  }
+
+  const api = DEMO ? backendDemo() : backendGitHub();
+
+  /* =========================================================
+     UTILITÁRIOS
+     ========================================================= */
+  const $ = id => document.getElementById(id);
+  function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+  function limparNome(s) { return String(s || '').replace(/\s+/g, ' ').trim().slice(0, 60); }
+  function hash(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36); }
+  function slug(nome) {
+    const s = nome.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60).replace(/-+$/, '');
+    return s || ('participante-' + hash(nome.toLowerCase()));
+  }
+  function caminhoDe(nome) { return GH.pasta + '/' + slug(nome) + '.json'; }
+  function isoLocal(d) {
+    const o = -d.getTimezoneOffset(), s = o >= 0 ? '+' : '-', a = Math.abs(o);
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + 'T' + pad(d.getHours()) + ':' +
+      pad(d.getMinutes()) + ':' + pad(d.getSeconds()) + s + pad(Math.floor(a / 60)) + ':' + pad(a % 60);
+  }
+  function quando(iso) {
+    const d = new Date(iso); if (isNaN(d)) return '';
+    return pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + ' às ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+  }
+  function vibrar() { try { navigator.vibrate && navigator.vibrate(8); } catch (e) {} }
+  // Ex.: { "Seg 02/11": "posso 19h, 20h · talvez 21h" }
+  function resumoLegivel(sim, talvez) {
+    const dias = {};
+    const add = (chaves, tipo) => chaves.forEach(k => {
+      const { d, h } = INFO[k]; const rot = SEMANA[d.dow] + ' ' + d.dia + '/' + d.mes;
+      (dias[rot] = dias[rot] || { ordem: INFO[k].ordem, posso: [], talvez: [] })[tipo].push(pad(h) + 'h');
+    });
+    add(ordenar(sim), 'posso'); add(ordenar(talvez), 'talvez');
+    const r = {};
+    Object.keys(dias).sort((a, b) => dias[a].ordem - dias[b].ordem).forEach(rot => {
+      const p = [];
+      if (dias[rot].posso.length) p.push('posso ' + dias[rot].posso.join(', '));
+      if (dias[rot].talvez.length) p.push('talvez ' + dias[rot].talvez.join(', '));
+      r[rot] = p.join(' · ');
+    });
+    return r;
+  }
+  function plural(n, um, varios) { return n + ' ' + (n === 1 ? um : varios); }
+  function corDe(nome) { const n = parseInt(hash(nome), 36) % 360; return 'hsl(' + n + ' 42% 42%)'; }
+
+  /* =========================================================
+     ESTADO
+     ========================================================= */
+  const params = new URLSearchParams(location.search);
+  const MODO_ORG = params.has('resultados') || location.hash === '#resultados';
+  const estado = {
+    nome: '',
+    sel: new Map(),        // chave -> 'sim' | 'talvez'  (ausente = não posso)
+    confirmarVazio: false,
+    salvando: false,
+    recemSalvo: null,      // {path, data} do último envio
+    ignorar: new Set(),    // caminhos antigos já removidos
+    ultimo: null           // último resultado calculado
+  };
+  (function restaurar() {
+    const minha = ls.get(K_MINHA), rasc = ls.get(K_RASCUNHO);
+    const fonte = rasc || minha;
+    if (fonte) {
+      estado.nome = limparNome(fonte.nome);
+      (fonte.horarios || []).forEach(k => { if (INFO[k]) estado.sel.set(k, 'sim'); });
+      (fonte.talvez || []).forEach(k => { if (INFO[k]) estado.sel.set(k, 'talvez'); });
+    }
+  })();
+  function chavesCom(valor) { return ordenar([...estado.sel].filter(([, v]) => v === valor).map(([k]) => k)); }
+  function salvarRascunho() { ls.set(K_RASCUNHO, { nome: estado.nome, horarios: chavesCom('sim'), talvez: chavesCom('talvez') }); }
+  function igualAoSalvo(minha) {
+    if (!minha || minha.nome !== estado.nome) return false;
+    const a = minha.horarios || [], b = minha.talvez || [];
+    if (a.length + b.length !== estado.sel.size) return false;
+    return a.every(k => estado.sel.get(k) === 'sim') && b.every(k => estado.sel.get(k) === 'talvez');
+  }
+
+  /* =========================================================
+     NAVEGAÇÃO ENTRE TELAS
+     ========================================================= */
+  const TELAS = { nome: $('tela-nome'), grade: $('tela-grade'), resultados: $('tela-resultados') };
+  let telaAtual = 'nome';
+  function mostrar(t) {
+    telaAtual = t;
+    Object.keys(TELAS).forEach(k => { TELAS[k].hidden = k !== t; });
+    window.scrollTo(0, 0);
+    if (t === 'nome') renderNome();
+    if (t === 'grade') renderGrade();
+  }
+  function ir(t) {
+    const prof = ((history.state && history.state.prof) || 0) + 1;
+    try { history.pushState({ tela: t, prof }, ''); } catch (e) {}
+    mostrar(t);
+  }
+  window.addEventListener('popstate', e => {
+    let t = (e.state && e.state.tela) || 'nome';
+    if (t === 'grade' && !estado.nome) t = 'nome';
+    mostrar(t);
+    if (t === 'resultados' && !estado.ultimo) carregarResultados();
+  });
+  function voltarPara(t) {
+    if (history.state && history.state.prof > 0) history.back();
+    else { try { history.replaceState({ tela: t, prof: 0 }, ''); } catch (e) {} mostrar(t); }
+  }
+
+  /* =========================================================
+     TELA 1 — NOME
+     ========================================================= */
+  function aplicarTextos() {
+    document.title = CFG.titulo;
+    $('titulo').textContent = CFG.titulo;
+    $('descricao').textContent = CFG.descricao;
+    const a = DIAS[0], b = DIAS[DIAS.length - 1];
+    let periodo;
+    if (DIAS.length === 1) periodo = (+a.dia) + ' de ' + MESES[a.m];
+    else if (a.m === b.m && a.ano === b.ano) periodo = (+a.dia) + ' a ' + (+b.dia) + ' de ' + MESES[a.m];
+    else periodo = a.dia + '/' + a.mes + ' a ' + b.dia + '/' + b.mes;
+    $('selo-periodo').textContent = periodo + ' · ' + pad(H0) + 'h às ' + pad(H1) + 'h';
+    $('demo').hidden = !DEMO;
+  }
+
+  function renderNome() {
+    const minha = ls.get(K_MINHA);
+    const inp = $('nome');
+    if (!inp.value) inp.value = estado.nome || '';
+    $('erro-nome').hidden = true;
+    $('bloco-retorno').hidden = !minha;
+    $('btn-ver-resultados').hidden = !minha;
+    $('btn-outra-pessoa').hidden = !minha;
+    $('passos').hidden = !!minha;
+    if (minha) {
+      $('retorno-nome').textContent = minha.nome;
+      const n = (minha.horarios || []).length, t = (minha.talvez || []).length;
+      $('retorno-info').textContent = 'Você respondeu em ' + quando(minha.atualizadoEm) + ' (' +
+        plural(n, 'horário posso', 'horários posso') + (t ? ', ' + t + ' talvez' : '') + '). Pode alterar quando quiser.';
+      $('btn-continuar').textContent = 'Editar meus horários';
+    } else {
+      $('btn-continuar').textContent = 'Escolher horários';
+    }
+  }
+
+  function continuar() {
+    const nome = limparNome($('nome').value);
+    const err = $('erro-nome');
+    if (nome.length < 2) {
+      err.textContent = 'Digite seu nome para continuar.'; err.hidden = false; $('nome').focus(); return;
+    }
+    estado.nome = nome;
+    $('nome').value = nome;
+    salvarRascunho();
+    ir('grade');
+  }
+  $('btn-continuar').addEventListener('click', continuar);
+  $('nome').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); continuar(); } });
+  $('nome').addEventListener('input', () => { $('erro-nome').hidden = true; });
+  $('btn-ver-resultados').addEventListener('click', () => { $('aviso-sucesso').hidden = true; ir('resultados'); carregarResultados(); });
+  $('btn-outra-pessoa').addEventListener('click', () => {
+    const minha = ls.get(K_MINHA);
+    const ok = window.confirm('A resposta de ' + (minha ? minha.nome : 'quem já respondeu') +
+      ' continua salva, mas não poderá mais ser editada por este aparelho. Continuar?');
+    if (!ok) return;
+    ls.del(K_MINHA); ls.del(K_RASCUNHO);
+    dispositivo = novoId(); ls.set(K_DISP, dispositivo);
+    estado.nome = ''; estado.sel = new Map(); estado.recemSalvo = null; estado.ultimo = null;
+    $('nome').value = '';
+    renderNome();
+    $('nome').focus();
+  });
+
+  /* =========================================================
+     TELA 2 — GRADE DE HORÁRIOS
+     ========================================================= */
+  const COLS = 'var(--col-hora) repeat(' + DIAS.length + ', minmax(0, 1fr))';
+  function montarCabecalho(el) {
+    el.style.gridTemplateColumns = COLS;
+    const meses = [...new Set(DIAS.map(d => MESES[d.m].slice(0, 3)))].join('/');
+    el.innerHTML = '<div class="cab-canto">' + meses + '</div>' + DIAS.map(d =>
+      '<div class="cab-dia' + (d.fds ? ' fds' : '') + '"><span>' + SEMANA[d.dow] + '</span><b>' + d.dia + '</b></div>').join('');
+  }
+  function montarGrade(el, resultado) {
+    el.style.gridTemplateColumns = COLS;
+    let html = '';
+    HORAS.forEach((h, i) => {
+      const q = (i > 0 && (h === 12 || h === 18)) ? ' quebra' : '';
+      html += '<div class="hora' + q + '">' + pad(h) + 'h</div>';
+      DIAS.forEach(d => {
+        const k = d.iso + 'T' + pad(h);
+        const rot = SEMANA_LONGA[d.dow] + ', ' + d.dia + '/' + d.mes + ', das ' + pad(h) + 'h às ' + pad(h + 1) + 'h';
+        html += resultado
+          ? '<button type="button" class="cel cel-res' + q + '" data-k="' + k + '" data-rot="' + rot + '" aria-label="' + rot + '"><span class="n"></span><span class="t" hidden></span></button>'
+          : '<button type="button" class="cel esc' + (d.fds ? ' fds' : '') + q + '" data-k="' + k + '" data-rot="' + rot + '" aria-label="' + rot + ': não posso"></button>';
+      });
+    });
+    el.innerHTML = html;
+  }
+
+  const NOME_ESTADO = { sim: 'posso', talvez: 'talvez' };
+  function pintarCelula(b) {
+    const v = estado.sel.get(b.dataset.k);
+    b.classList.toggle('sim', v === 'sim');
+    b.classList.toggle('talvez', v === 'talvez');
+    b.setAttribute('aria-label', b.dataset.rot + ': ' + (NOME_ESTADO[v] || 'não posso'));
+  }
+  function renderGrade() {
+    $('grade-nome').textContent = estado.nome;
+    $('grade').querySelectorAll('.cel').forEach(pintarCelula);
+    estado.confirmarVazio = false;
+    $('erro-salvar').hidden = true;
+    atualizarBarra();
+  }
+
+  function atualizarBarra() {
+    const n = estado.sel.size, s = chavesCom('sim').length, t = n - s;
+    $('contador').textContent = n === 0 ? 'Nenhum horário marcado'
+      : [s ? s + ' posso' : '', t ? t + ' talvez' : ''].filter(Boolean).join(' · ');
+    const st = $('barra-status');
+    const minha = ls.get(K_MINHA);
+    st.classList.remove('pendente');
+    if (minha) {
+      const igual = igualAoSalvo(minha);
+      st.textContent = igual ? 'Tudo salvo ✓' : 'Alterações ainda não salvas';
+      if (!igual) st.classList.add('pendente');
+    } else {
+      st.textContent = n ? 'Ainda não salvo' : 'Toque nos quadradinhos';
+      if (n) st.classList.add('pendente');
+    }
+    const btn = $('btn-salvar');
+    if (!estado.salvando) btn.textContent = estado.confirmarVazio ? 'Salvar assim' : 'Salvar';
+  }
+
+  $('grade').addEventListener('click', e => {
+    const b = e.target.closest('.cel');
+    if (!b || estado.salvando) return;
+    const k = b.dataset.k;
+    // ciclo: não posso → posso → talvez → não posso
+    const v = estado.sel.get(k);
+    if (!v) estado.sel.set(k, 'sim');
+    else if (v === 'sim') estado.sel.set(k, 'talvez');
+    else estado.sel.delete(k);
+    pintarCelula(b);
+    vibrar();
+    if (estado.confirmarVazio) { estado.confirmarVazio = false; $('erro-salvar').hidden = true; }
+    atualizarBarra();
+    salvarRascunho();
+  });
+  $('btn-voltar').addEventListener('click', () => voltarPara('nome'));
+
+  function mensagemErro(e, acao) {
+    if (e && e.nomeEmUso) {
+      return 'Já existe uma resposta com o nome “' + e.nomeEmUso + '”, enviada de outro aparelho. ' +
+        'Para não apagar a resposta dessa pessoa, volte e use seu nome completo (ou acrescente o sobrenome).';
+    }
+    const pre = acao === 'carregar' ? 'Não foi possível carregar os resultados' : 'Não foi possível salvar';
+    if (!e || !e.status) return pre + ': sem conexão com a internet ou o GitHub não respondeu. Tente de novo' + (acao === 'carregar' ? '.' : ' — suas marcações continuam aqui.');
+    if (e.status === 401) return pre + ': o GitHub recusou o acesso (token inválido ou vencido). Avise o organizador.';
+    if (e.status === 403 && /rate limit/i.test(e.message)) return pre + ': o GitHub está limitando os acessos agora. Espere alguns minutos e tente de novo.';
+    if (e.status === 403 || e.status === 404) return pre + ': o site não tem permissão para acessar as respostas no GitHub. Avise o organizador.';
+    return pre + ' agora (erro ' + e.status + '). Tente de novo em instantes.';
+  }
+
+  async function salvar() {
+    if (estado.salvando) return;
+    const erroEl = $('erro-salvar');
+    erroEl.hidden = true; erroEl.classList.remove('aviso');
+
+    if (estado.sel.size === 0 && !estado.confirmarVazio) {
+      estado.confirmarVazio = true;
+      erroEl.textContent = 'Você não marcou nenhum horário. Se não puder em nenhum, toque em “Salvar assim”.';
+      erroEl.classList.add('aviso'); erroEl.hidden = false;
+      atualizarBarra();
+      return;
+    }
+
+    const nome = estado.nome;
+    const caminho = caminhoDe(nome);
+    const minha = ls.get(K_MINHA);
+    const caminhoAntigo = minha && minha.caminho;
+    const agora = isoLocal(new Date());
+    const sim = chavesCom('sim'), talvez = chavesCom('talvez');
+    const dados = {
+      nome,
+      atualizado_em: agora,
+      total_posso: sim.length,
+      total_talvez: talvez.length,
+      resumo: resumoLegivel(sim, talvez),
+      horarios: sim.map(chaveParaTexto),
+      talvez: talvez.map(chaveParaTexto),
+      dispositivo,
+      criado_em: (minha && minha.criadoEm) || agora
+    };
+
+    estado.salvando = true;
+    const btn = $('btn-salvar');
+    btn.disabled = true; btn.innerHTML = '<span class="giro"></span>Salvando…';
+    $('grade').classList.add('travada');
+
+    try {
+      for (let tentativa = 0; ; tentativa++) {
+        try {
+          const atual = await api.get(caminho);
+          if (atual && atual.data && atual.data.dispositivo && atual.data.dispositivo !== dispositivo) {
+            const e = new Error('nome em uso'); e.nomeEmUso = nome; throw e;
+          }
+          if (atual && atual.data && atual.data.criado_em) dados.criado_em = atual.data.criado_em;
+          await api.put(caminho, dados, atual && atual.sha, (atual ? 'Atualiza' : 'Nova') + ' resposta: ' + nome);
+          break;
+        } catch (e) {
+          if ((e.status === 409 || e.status === 422) && tentativa < 3) { await espera(500 + Math.random() * 900); continue; }
+          throw e;
+        }
+      }
+      // Mudou o nome? Remove o arquivo antigo (só se for deste aparelho)
+      if (caminhoAntigo && caminhoAntigo !== caminho) {
+        try {
+          const ant = await api.get(caminhoAntigo);
+          if (ant && ant.data && ant.data.dispositivo === dispositivo) {
+            await api.del(caminhoAntigo, ant.sha, 'Remove resposta antiga: ' + (ant.data.nome || ''));
+          }
+          estado.ignorar.add(caminhoAntigo);
+        } catch (e) { /* não impede o salvamento */ }
+      }
+      ls.set(K_MINHA, { nome, caminho, horarios: sim, talvez, atualizadoEm: agora, criadoEm: dados.criado_em });
+      ls.del(K_RASCUNHO);
+      estado.recemSalvo = { path: caminho, data: dados };
+      estado.ignorar.delete(caminho);
+      vibrar();
+      ir('resultados');
+      $('aviso-sucesso').hidden = false;
+      carregarResultados();
+    } catch (e) {
+      erroEl.textContent = mensagemErro(e, 'salvar');
+      erroEl.hidden = false;
+    } finally {
+      estado.salvando = false;
+      btn.disabled = false;
+      $('grade').classList.remove('travada');
+      atualizarBarra();
+    }
+  }
+  $('btn-salvar').addEventListener('click', salvar);
+
+  /* =========================================================
+     TELA 3 — RESULTADOS
+     ========================================================= */
+  let carregamento = 0;
+  async function carregarResultados() {
+    const id = ++carregamento;
+    const minha = ls.get(K_MINHA);
+    $('btn-editar').textContent = minha ? 'Editar minhas respostas' : 'Responder';
+    $('erro-res').hidden = true;
+    $('res-resumo').innerHTML = '<span class="carregando"><span class="giro escuro"></span>Carregando respostas…</span>';
+    $('btn-atualizar').disabled = true;
+    try {
+      let lista = await api.list();
+      if (id !== carregamento) return;
+      lista = lista.filter(r => !estado.ignorar.has(r.path));
+      if (estado.recemSalvo) {
+        lista = lista.filter(r => r.path !== estado.recemSalvo.path);
+        lista.push(estado.recemSalvo);
+      }
+      renderResultados(lista);
+    } catch (e) {
+      if (id !== carregamento) return;
+      $('res-resumo').textContent = '';
+      $('erro-res').textContent = mensagemErro(e, 'carregar');
+      $('erro-res').hidden = false;
+    } finally {
+      if (id === carregamento) $('btn-atualizar').disabled = false;
+    }
+  }
+
+  function renderResultados(lista) {
+    const minha = ls.get(K_MINHA);
+    const ler = arr => {
+      const out = new Set();
+      (Array.isArray(arr) ? arr : []).forEach(s => { const k = textoParaChave(s); if (k && INFO[k]) out.add(k); });
+      return out;
+    };
+    const pessoas = lista.map(r => {
+      const d = r.data || {};
+      const sim = ler(d.horarios), talvez = ler(d.talvez);
+      sim.forEach(k => talvez.delete(k));
+      return { nome: limparNome(d.nome) || '(sem nome)', sim, talvez, path: r.path, eu: !!minha && r.path === minha.caminho };
+    }).sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+
+    const total = pessoas.length;
+    const S = {}, T = {};
+    CHAVES.forEach(k => { S[k] = 0; T[k] = 0; });
+    pessoas.forEach(p => { p.sim.forEach(k => S[k]++); p.talvez.forEach(k => T[k]++); });
+    // Ordem: mais gente (posso + talvez); empate → mais "posso"; empate → mais cedo
+    const ordem = (a, b) => ((S[b] + T[b]) - (S[a] + T[a])) || (S[b] - S[a]) || (INFO[a].ordem - INFO[b].ordem);
+    const top = CHAVES.filter(k => S[k] + T[k] > 0).sort(ordem);
+    const melhor = top[0];
+    const ehMelhor = k => !!melhor && S[k] === S[melhor] && T[k] === T[melhor];
+    estado.ultimo = { pessoas, S, T, total };
+
+    if (!total) {
+      $('res-resumo').textContent = 'Ainda não há respostas.';
+      $('res-conteudo').hidden = true;
+      return;
+    }
+    $('res-resumo').textContent = (total === 1 ? '1 pessoa respondeu' : total + ' pessoas responderam') + ' até agora.';
+    $('res-conteudo').hidden = false;
+
+    // Melhores horários
+    const topEl = $('res-top');
+    if (!top.length) {
+      topEl.innerHTML = '<li class="top-item"><span class="muted">Ninguém marcou horários ainda.</span></li>';
+    } else {
+      const mostrados = top.slice(0, 5);
+      const empatados = top.filter(ehMelhor).length;
+      topEl.innerHTML = mostrados.map(k => {
+        const { d, h } = INFO[k];
+        const podem = pessoas.filter(p => p.sim.has(k)).map(p => esc(p.nome));
+        const tz = pessoas.filter(p => p.talvez.has(k)).map(p => esc(p.nome));
+        const nomes = podem.join(', ') + (tz.length ? (podem.length ? ' · ' : '') + '<span class="tz">talvez: ' + tz.join(', ') + '</span>' : '');
+        const ps = (S[k] / total * 100).toFixed(1), pt = (T[k] / total * 100).toFixed(1);
+        return '<li class="top-item' + (ehMelhor(k) ? ' melhor' : '') + '">' +
+          '<div class="top-quando"><b>' + rotuloDia(d) + '</b><span>' + intervalo(h) + '</span></div>' +
+          '<div class="top-placar"><div class="barrinha"><i style="width:' + ps + '%"></i><i class="t" style="width:' + pt + '%"></i></div>' +
+          '<div><b>' + S[k] + '/' + total + '</b>' + (T[k] ? '<small>+' + T[k] + ' talvez</small>' : '') + '</div></div>' +
+          '<p class="top-nomes">' + nomes + '</p></li>';
+      }).join('') + (empatados > mostrados.length
+        ? '<li class="muted pequeno" style="margin:4px 2px 0">+ ' + (empatados - mostrados.length) + ' outro(s) horário(s) empatado(s). Veja no mapa.</li>'
+        : '');
+    }
+
+    // Mapa
+    $('res-grade').querySelectorAll('.cel-res').forEach(b => {
+      const k = b.dataset.k, s = S[k], t = T[k], a = (s + 0.5 * t) / total;
+      b.style.background = (s || t) ? 'rgba(14,107,98,' + (0.1 + 0.9 * a).toFixed(3) + ')' : '';
+      b.classList.toggle('escuro', a > 0.5);
+      b.classList.toggle('top', ehMelhor(k));
+      b.classList.remove('ativa');
+      b.querySelector('.n').textContent = s || '';
+      const pt = b.querySelector('.t'); pt.textContent = '+' + t; pt.hidden = !t;
+      b.setAttribute('aria-label', b.dataset.rot + ': ' + s + ' podem' + (t ? ', ' + t + ' talvez' : '') + ', de ' + total);
+    });
+    mostrarDetalhe(melhor || null);
+
+    // Pessoas
+    $('res-pessoas').innerHTML = pessoas.map(p =>
+      '<li class="pessoa"><span class="avatar" style="background:' + corDe(p.nome) + '">' + esc(p.nome.charAt(0).toUpperCase()) + '</span>' +
+      '<span class="pessoa-nome">' + esc(p.nome) + (p.eu ? ' <em>(você)</em>' : '') + '</span>' +
+      '<span class="pessoa-n">' + p.sim.size + ' posso' + (p.talvez.size ? ' · ' + p.talvez.size + ' talvez' : '') + '</span></li>').join('');
+  }
+
+  function mostrarDetalhe(k) {
+    const el = $('res-detalhe'), u = estado.ultimo;
+    $('res-grade').querySelectorAll('.cel-res.ativa').forEach(b => b.classList.remove('ativa'));
+    if (!k || !u) { el.innerHTML = '<p class="muted">Toque num horário do mapa para ver quem pode.</p>'; return; }
+    const b = $('res-grade').querySelector('[data-k="' + k + '"]'); if (b) b.classList.add('ativa');
+    const { d, h } = INFO[k];
+    const podem = u.pessoas.filter(p => p.sim.has(k));
+    const talvez = u.pessoas.filter(p => p.talvez.has(k));
+    const nao = u.pessoas.filter(p => !p.sim.has(k) && !p.talvez.has(k));
+    const nomes = l => l.map(p => esc(p.nome) + (p.eu ? ' (você)' : '')).join(', ');
+    el.innerHTML = '<p class="det-quando">' + rotuloDiaLongo(d) + ' · ' + intervalo(h) + '</p>' +
+      '<p class="det-placar">' + plural(podem.length, 'pode', 'podem') + ' · ' + talvez.length + ' talvez · ' +
+        plural(nao.length, 'não pode', 'não podem') + '</p>' +
+      (podem.length ? '<p class="det-linha"><span class="tag ok">✓ Podem</span>' + nomes(podem) + '</p>' : '') +
+      (talvez.length ? '<p class="det-linha"><span class="tag tz">? Talvez</span>' + nomes(talvez) + '</p>' : '') +
+      (nao.length ? '<p class="det-linha"><span class="tag nao">✕ Não podem</span>' + nomes(nao) + '</p>' : '');
+  }
+  $('res-grade').addEventListener('click', e => {
+    const b = e.target.closest('.cel-res'); if (!b || !estado.ultimo) return;
+    mostrarDetalhe(b.dataset.k);
+  });
+  $('btn-atualizar').addEventListener('click', () => carregarResultados());
+  $('btn-editar').addEventListener('click', () => {
+    $('aviso-sucesso').hidden = true;
+    if (ls.get(K_MINHA) && estado.nome) ir('grade'); else ir('nome');
+  });
+
+  /* =========================================================
+     INÍCIO
+     ========================================================= */
+  aplicarTextos();
+  montarCabecalho($('grade-cab'));
+  montarGrade($('grade'), false);
+  montarCabecalho($('res-cab'));
+  montarGrade($('res-grade'), true);
+
+  if (MODO_ORG) {
+    try { history.replaceState({ tela: 'resultados', prof: 0 }, ''); } catch (e) {}
+    mostrar('resultados');
+    carregarResultados();
+  } else {
+    try { history.replaceState({ tela: 'nome', prof: 0 }, ''); } catch (e) {}
+    mostrar('nome');
+  }
+})();
+</script>
+</body>
+</html>
