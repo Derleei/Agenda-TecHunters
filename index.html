@@ -6,7 +6,9 @@
 <meta name="theme-color" content="#f5f2ec">
 <meta name="color-scheme" content="light">
 <meta name="robots" content="noindex">
-<title>Vamos marcar?</title>
+<title>Agenda TecHunters</title>
+<meta property="og:title" content="Agenda TecHunters">
+<meta property="og:description" content="Marque os horários em que você pode participar (1 a 7 de novembro).">
 <script src="config.js"></script>
 <style>
 :root{
@@ -601,7 +603,6 @@ h3{font-size:12.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--mu
      TELA 1 — NOME
      ========================================================= */
   function aplicarTextos() {
-    document.title = CFG.titulo;
     $('titulo').textContent = CFG.titulo;
     $('descricao').textContent = CFG.descricao;
     const a = DIAS[0], b = DIAS[DIAS.length - 1];
